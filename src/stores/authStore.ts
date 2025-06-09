@@ -1,0 +1,96 @@
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import type { User } from '@/types/User';
+
+export const useAuthStore = defineStore('auth', () => {
+  const token = ref(localStorage.getItem('auth_token') || '');
+  const user = ref<User | null>(null);
+  const isLoading = ref(false);
+  const error = ref('');
+
+  const router = useRouter();
+  const isAuthenticated = computed(() => !!token.value);
+
+  async function login(username: string, password: string) {
+    isLoading.value = true;
+    error.value = '';
+
+    try {
+      const response = await fetch('/api/token-auth/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      token.value = data.token;
+      localStorage.setItem('auth_token', token.value);
+
+      await fetchUser();
+    } catch(err: Error | unknown) {
+      if (err instanceof Error) {
+        error.value = err.message;
+      } else {
+        error.value = 'An unexpected error occurred';
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function fetchUser() {
+    if (!token.value) {
+      user.value = null;
+      return;
+    }
+
+    isLoading.value = true;
+    error.value = '';
+
+    try {
+      const response = await fetch('/api/user/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${token.value}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch user data');
+      }
+
+      user.value = data.data as User;
+    } catch(err: Error | unknown) {
+      if (err instanceof Error) {
+        error.value = err.message;
+      } else {
+        error.value = 'An unexpected error occurred';
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  return {
+    token,
+    user,
+    isLoading,
+    error,
+    isAuthenticated,
+    login,
+    fetchUser,
+  }
+});

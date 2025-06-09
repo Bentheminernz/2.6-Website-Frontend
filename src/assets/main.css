@@ -1,2 +1,38 @@
 @import 'tailwindcss';
 @plugin "daisyui";
+
+
+@plugin "daisyui/theme" {
+  name: "aqua";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(96% 0.018 272.314);
+  --color-base-200: oklch(93% 0.034 272.788);
+  --color-base-300: oklch(87% 0.065 274.039);
+  --color-base-content: oklch(35% 0.144 278.697);
+  --color-primary: oklch(70% 0.183 293.541);
+  --color-primary-content: oklch(28% 0.141 291.089);
+  --color-secondary: oklch(0% 0 0);
+  --color-secondary-content: oklch(100% 0 0);
+  --color-accent: oklch(70% 0.01 56.259);
+  --color-accent-content: oklch(14% 0.004 49.25);
+  --color-neutral: oklch(51% 0.262 276.966);
+  --color-neutral-content: oklch(96% 0.018 272.314);
+  --color-info: oklch(78% 0.154 211.53);
+  --color-info-content: oklch(30% 0.056 229.695);
+  --color-success: oklch(76% 0.177 163.223);
+  --color-success-content: oklch(26% 0.051 172.552);
+  --color-warning: oklch(85% 0.199 91.936);
+  --color-warning-content: oklch(28% 0.066 53.813);
+  --color-error: oklch(71% 0.202 349.761);
+  --color-error-content: oklch(28% 0.109 3.907);
+  --radius-selector: 1rem;
+  --radius-field: 2rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 1;
+}
