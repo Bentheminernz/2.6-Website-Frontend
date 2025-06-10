@@ -1,12 +1,11 @@
 @import 'tailwindcss';
 @plugin "daisyui";
 
-
 @plugin "daisyui/theme" {
-  name: "aqua";
+  name: 'aqua';
   default: true;
   prefersdark: false;
-  color-scheme: "light";
+  color-scheme: 'light';
   --color-base-100: oklch(96% 0.018 272.314);
   --color-base-200: oklch(93% 0.034 272.788);
   --color-base-300: oklch(87% 0.065 274.039);
