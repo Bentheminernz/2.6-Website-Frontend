@@ -8,16 +8,6 @@ const authStore = useAuthStore()
 const itemsInCart = computed(() => {
   return authStore.user?.cart_items?.length || 0
 })
-
-const cartSubtotal = computed(() => {
-  if (!authStore.user?.cart_items) return 0
-
-  return authStore.user.cart_items
-    .reduce((total, cartItem) => {
-      return total + cartItem.game.price * cartItem.quantity
-    }, 0)
-    .toFixed(2)
-})
 </script>
 
 <template>
@@ -52,7 +42,7 @@ const cartSubtotal = computed(() => {
         >
           <div class="card-body">
             <span class="text-lg font-bold">{{ itemsInCart }} items</span>
-            <span class="text-info">Subtotal: ${{ cartSubtotal }}</span>
+            <span class="text-info">Subtotal: ${{ authStore.user?.cart_subtotal }}</span>
             <div class="card-actions">
               <button class="btn btn-primary btn-block">View cart</button>
             </div>

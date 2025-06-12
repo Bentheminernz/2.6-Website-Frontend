@@ -6,6 +6,10 @@ export interface BasicGame {
   image: string
 }
 
+export interface BasicCartItemGame {
+  id: number
+}
+
 export enum GameGenre {
   ACTION = "Action",
   ADVENTURE = "Adventure",

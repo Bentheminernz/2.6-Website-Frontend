@@ -39,7 +39,7 @@ const handleRemoveFromCart = async () => {
 }
 
 const isGameInCart = computed(() => {
-  return authStore.user?.cart_items.some(item => item.game.id === props.gameId)
+  return authStore.user?.cart_items.some(item => item.game_id === props.gameId) || false
 })
 
 const handleCartAction = async () => {

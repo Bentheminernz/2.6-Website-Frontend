@@ -1,9 +1,9 @@
-import type { CartItem } from '@/types/User'
+import type { BasicCartItem } from '@/types/User'
 import { useAuthStore } from '@/stores/authStore'
 
 export async function addGameToCart(
   gameId: number,
-): Promise<{ success: boolean; message?: string; data?: CartItem[] }> {
+): Promise<{ success: boolean; message?: string; data?: BasicCartItem[] }> {
   const authStore = useAuthStore()
   const token = authStore.token
 
@@ -23,7 +23,7 @@ export async function addGameToCart(
     }
 
     const data = await response.json()
-    return { success: true, data: data.data as CartItem[] }
+    return { success: true, data: data.data as BasicCartItem[] }
   } catch (error) {
     console.error('Error adding game to cart:', error)
     return {
@@ -35,7 +35,7 @@ export async function addGameToCart(
 
 export async function removeGameFromCart(
   gameId: number,
-): Promise<{ success: boolean; message?: string; data?: CartItem[] }> {
+): Promise<{ success: boolean; message?: string; data?: BasicCartItem[] }> {
   const authStore = useAuthStore()
   const token = authStore.token
 
@@ -55,7 +55,7 @@ export async function removeGameFromCart(
     }
 
     const data = await response.json()
-    return { success: true, data: data.data as CartItem[] }
+    return { success: true, data: data.data as BasicCartItem[] }
   } catch (error) {
     console.error('Error removing game from cart:', error)
     return {
