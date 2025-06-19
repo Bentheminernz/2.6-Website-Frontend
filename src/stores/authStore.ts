@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import type { User, UserCart } from '@/types/User'
+import type { User, UserCart, OwnedGame } from '@/types/User'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('auth_token') || '')
   const user = ref<User | null>(null)
   const userCart = ref<UserCart | null>(null)
+  const ownedGames = ref<OwnedGame[]>([])
   const isLoading = ref(false)
   const error = ref('')
 
@@ -16,6 +17,8 @@ export const useAuthStore = defineStore('auth', () => {
   async function initialize() {
     if (token.value) {
       await fetchUser()
+      await fetchUserCart()
+      await fetchOwnedGames()
     }
   }
 
@@ -43,6 +46,9 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('auth_token', token.value)
 
       await fetchUser()
+      await fetchUserCart()
+      await fetchOwnedGames()
+      router.push({ name: 'home' })
     } catch (err: Error | unknown) {
       if (err instanceof Error) {
         error.value = err.message
@@ -128,6 +134,43 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function fetchOwnedGames() {
+    if (!token.value) {
+      ownedGames.value = []
+      return
+    }
+
+    isLoading.value = true
+    error.value = ''
+
+    try {
+      const response = await fetch('/api/games/owned/', {
+        method: 'GET',
+        headers: {
+          Authorization: `Token ${token.value}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch owned games')
+      }
+
+      ownedGames.value = data.data as OwnedGame[]
+    } catch (err: Error | unknown) {
+      if (err instanceof Error) {
+        error.value = err.message
+      } else {
+        error.value = 'An unexpected error occurred'
+      }
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   function logout() {
     token.value = ''
     user.value = null
@@ -139,6 +182,7 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     user,
     userCart,
+    ownedGames,
     isLoading,
     error,
     isAuthenticated,
@@ -146,6 +190,7 @@ export const useAuthStore = defineStore('auth', () => {
     fetchUser,
     initialize,
     fetchUserCart,
+    fetchOwnedGames,
     logout,
   }
 })

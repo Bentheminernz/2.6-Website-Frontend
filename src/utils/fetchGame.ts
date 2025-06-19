@@ -1,7 +1,13 @@
 import { useAuthStore } from '@/stores/authStore'
-import type { BasicGame, Game } from '@/types/Game'
+import type { BasicGame, Game, GamePlatform, GameGenre } from '@/types/Game'
 
-export async function fetchAllGames(): Promise<{
+export async function fetchAllGames(
+  platform: string | null = null,
+  genre: string | null = null,
+  is_sale: boolean | null = null,
+  sort_by: string | null = null,
+  search: string | null = null,
+): Promise<{
   success: boolean
   games?: BasicGame[]
   message?: string
@@ -10,7 +16,14 @@ export async function fetchAllGames(): Promise<{
   const token = authStore.token
 
   try {
-    const response = await fetch('/api/games/all/', {
+    const params = new URLSearchParams()
+    if (platform) params.append('platform', platform)
+    if (genre) params.append('genre', genre)
+    if (is_sale !== null) params.append('is_sale', is_sale.toString())
+    if (sort_by) params.append('sort_by', sort_by)
+    if (search) params.append('search', search)
+
+    const response = await fetch(`/api/games/all/?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
