@@ -6,7 +6,9 @@ import { removeGameFromCart } from '@/utils/gameCartEdit'
 const authStore = useAuthStore()
 
 onMounted(() => {
-  authStore.fetchUserCart()
+  if (!authStore.userCart) {
+    authStore.fetchUserCart()
+  }
 })
 
 const handleRemoveFromCart = async (itemId: number) => {
@@ -45,14 +47,18 @@ const handleRemoveFromCart = async (itemId: number) => {
                 <img
                   :src="item.game.image"
                   :alt="item.game.title"
-                  class="w-20 h-20 object-cover rounded"
+                  class="w-20 h-20 object-cover rounded-2xl"
                 />
                 <div>
                   <RouterLink :to="`/games/${item.game.id}`">
                     <h3 class="card-title">{{ item.game.title }}</h3>
                   </RouterLink>
-                  <p class="text-sm text-gray-600">{{ item.game.description.substring(0, 100) }}...</p>
-                  <p class="text-sm text-gray-500">Added: {{ new Date(item.added_date).toLocaleDateString() }}</p>
+                  <p class="text-sm text-gray-600">
+                    {{ item.game.description.substring(0, 100) }}...
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    Added: {{ new Date(item.added_date).toLocaleDateString() }}
+                  </p>
                 </div>
               </div>
 
@@ -62,10 +68,7 @@ const handleRemoveFromCart = async (itemId: number) => {
                   <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
                 </div>
 
-                <button
-                  @click="handleRemoveFromCart(item.game.id)"
-                  class="btn btn-error btn-sm"
-                >
+                <button @click="handleRemoveFromCart(item.game.id)" class="btn btn-error btn-sm">
                   Remove
                 </button>
               </div>
@@ -74,14 +77,31 @@ const handleRemoveFromCart = async (itemId: number) => {
         </div>
       </div>
 
-      <div class="mt-8 p-4 bg-base-200 rounded-lg">
-        <div class="flex justify-between items-center">
-          <span class="text-xl font-semibold">Subtotal:</span>
-          <span class="text-xl font-bold">${{ authStore.userCart.cart_subtotal }}</span>
+      <div class="mt-8 p-6 bg-base-200 rounded-lg">
+        <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
+
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Items ({{ authStore.userCart.cart_items.length }})</span>
+            <span class="font-medium">${{ authStore.userCart.cart_subtotal.toFixed(2) }}</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Shipping</span>
+            <span class="font-medium">$5.95</span>
+          </div>
+
+          <div class="divider my-2"></div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-xl font-bold">Total</span>
+            <span class="text-xl font-bold">
+              ${{ (authStore.userCart.cart_subtotal + 5.95).toFixed(2) }}
+            </span>
+          </div>
         </div>
-        <button class="btn btn-primary btn-block mt-4">
-          Proceed to Checkout
-        </button>
+
+        <button class="btn btn-primary btn-block mt-6">Proceed to Checkout</button>
       </div>
     </div>
   </div>

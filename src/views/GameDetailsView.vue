@@ -45,9 +45,19 @@ const getPlatformDisplayName = (platform: string): string => {
 
       <div class="flex flex-col">
         <h1 class="text-2xl font-bold">{{ gameResponse.data?.title }}</h1>
-        <p class="text-gray-600 mt-2">Developer: {{ gameResponse.data?.developer || 'Unknown' }} | Publisher: {{ gameResponse.data?.publisher || 'Unknown' }}</p>
+        <p class="text-gray-600 mt-2">
+          Developer: {{ gameResponse.data?.developer || 'Unknown' }} | Publisher:
+          {{ gameResponse.data?.publisher || 'Unknown' }}
+        </p>
 
-        <p><span v-for="genre in gameResponse.data?.genres || []" :key="genre.id" class="badge badge-secondary mr-1">{{ genre.name }}</span></p>
+        <p>
+          <span
+            v-for="genre in gameResponse.data?.genres || []"
+            :key="genre.id"
+            class="badge badge-secondary mr-1"
+            >{{ genre.name }}</span
+          >
+        </p>
 
         <p class="mt-2">Supported Platforms</p>
         <ul class="list-disc pl-5">
@@ -58,15 +68,13 @@ const getPlatformDisplayName = (platform: string): string => {
 
         <p class="text-lg font-semibold mt-2">Price: ${{ gameResponse.data?.price }}</p>
 
-        <CartButton
-          :game-id="gameResponse.data?.id ?? 0"
-          class="mt-4"
-        />
+        <CartButton :game-id="gameResponse.data?.id ?? 0" class="mt-4" />
       </div>
     </div>
 
     <p class="mt-4 p-4 bg-base-200 rounded-lg shadow-lg">
-      <strong>Description:</strong> {{ gameResponse.data?.description || 'No description available' }}
+      <strong>Description:</strong>
+      {{ gameResponse.data?.description || 'No description available' }}
     </p>
   </div>
 </template>

@@ -39,7 +39,7 @@ const handleRemoveFromCart = async () => {
 }
 
 const isGameInCart = computed(() => {
-  return authStore.user?.cart_items.some(item => item.game_id === props.gameId) || false
+  return authStore.user?.cart_items.some((item) => item.game_id === props.gameId) || false
 })
 
 const handleCartAction = async () => {
@@ -53,7 +53,9 @@ const handleCartAction = async () => {
 const getButtonText = (gameId: number): string => {
   const isHovered = hoveredGameId.value === gameId
 
-  if (isGameInCart.value && isHovered) {
+  if (authStore.ownedGames.some((game) => game.game.id === gameId)) {
+    return 'Owned'
+  } else if (isGameInCart.value && isHovered) {
     return 'Remove from Cart'
   } else if (isGameInCart.value) {
     return 'Added'
@@ -65,7 +67,9 @@ const getButtonText = (gameId: number): string => {
 const getButtonClass = (gameId: number): string => {
   const isHovered = hoveredGameId.value === gameId
 
-  if (isGameInCart.value && isHovered) {
+  if (authStore.ownedGames.some((game) => game.game.id === gameId)) {
+    return 'btn-disabled'
+  } else if (isGameInCart.value && isHovered) {
     return 'btn-error'
   } else if (isGameInCart.value) {
     return 'btn-success'
@@ -76,7 +80,7 @@ const getButtonClass = (gameId: number): string => {
 </script>
 
 <template>
-    <button
+  <button
     class="btn transition-all duration-300 ease-in-out"
     :class="getButtonClass(props.gameId)"
     @click="handleCartAction()"

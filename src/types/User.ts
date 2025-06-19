@@ -26,3 +26,9 @@ export interface UserCart {
   cart_items: CartItem[]
   cart_subtotal: number
 }
+
+export interface OwnedGame {
+  id: number
+  game: BasicGame
+  purchase_date: string
+}
