@@ -1,13 +1,3 @@
-export interface BasicGame {
-  id: number
-  title: string
-  description: string
-  price: number
-  image: string
-  genres?: GenreObject[]
-  platforms?: PlatformObject[]
-}
-
 export interface BasicCartItemGame {
   id: number
 }
@@ -56,12 +46,19 @@ export interface GenreObject {
   name: keyof typeof GameGenre
 }
 
-export interface Game extends BasicGame {
+export interface Game {
+  id: number
+  title: string
+  description: string
+  price: number
+  image: string
+  genres?: GenreObject[]
+  platforms?: PlatformObject[]
   developer: string
   publisher: string
   release_date: string
   trailer_url?: string
-  is_sale: boolean
+  is_sale?: boolean
   sale_price?: number
   sale_start_date?: string
   sale_end_date?: string

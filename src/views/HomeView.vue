@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import type { Game } from '../types/Game'
 import { fetchAllGames } from '@/utils/fetchGame'
 

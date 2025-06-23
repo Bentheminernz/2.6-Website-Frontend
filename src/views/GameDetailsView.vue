@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import type { Game } from '../types/Game'
 import { GamePlatform } from '../types/Game'
 import { fetchSpecificGame } from '@/utils/fetchGame'
 import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
 import CartButton from '@/components/CartButton.vue'
 
+const authStore = useAuthStore()
 const route = useRoute()
 const gameId = Number(route.params.id as string)
 
@@ -28,6 +30,10 @@ const getPlatformDisplayName = (platform: string): string => {
 
   return GamePlatform[platform as keyof typeof GamePlatform] || platform
 }
+
+const isOwned = computed(() => {
+  return authStore.ownedGames.some(game => game.game.id === gameId)
+})
 </script>
 
 <template>
@@ -65,10 +71,27 @@ const getPlatformDisplayName = (platform: string): string => {
             {{ getPlatformDisplayName(platform.name) }}
           </li>
         </ul>
+        <div v-if="gameResponse.data?.is_sale" class="mt-2">
+          <p class="text-md font-bold line-through mr-2 text-gray-400/80">
+            Original Price: ${{ gameResponse.data?.price }}
+          </p>
+          <p class="text-xl font-bold text-red-500">
+            Sale Price: ${{ gameResponse.data?.sale_price }}
+          </p>
+          <p class="text-sm text-gray-500" v-if="gameResponse.data?.sale_end_date">
+            Sale ends on {{ new Date(gameResponse.data.sale_end_date).toLocaleDateString() }}
+          </p>
+        </div>
 
-        <p class="text-lg font-semibold mt-2">Price: ${{ gameResponse.data?.price }}</p>
+        <p class="text-lg font-semibold mt-2" v-else>Price: ${{ gameResponse.data?.price }}</p>
 
-        <CartButton :game-id="gameResponse.data?.id ?? 0" class="mt-4" />
+        <div v-if="isOwned" class="mt-4">
+          <button class="btn btn-primary mt-2" @click="$router.push(`/library`)">
+            Download Game
+          </button>
+        </div>
+
+        <CartButton :game-id="gameResponse.data?.id ?? 0" v-else class="mt-4" />
       </div>
     </div>
 

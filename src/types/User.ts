@@ -1,4 +1,4 @@
-import type { BasicCartItemGame, BasicGame, Game } from './Game'
+import type { Game } from './Game'
 
 export interface User {
   id: number
@@ -17,7 +17,7 @@ export interface BasicCartItem {
 
 export interface CartItem {
   id: number
-  game: BasicGame
+  game: Game
   quantity: number
   added_date: string
 }
@@ -29,6 +29,6 @@ export interface UserCart {
 
 export interface OwnedGame {
   id: number
-  game: BasicGame
+  game: Game
   purchase_date: string
 }

@@ -1,5 +1,21 @@
-import { useAuthStore } from '@/stores/authStore'
-import type { BasicGame, Game, GamePlatform, GameGenre } from '@/types/Game'
+import type { Game } from '@/types/Game'
+
+export interface GamesPagination {
+  current_page: number
+  page_size: number
+  total_games: number
+  total_pages: number
+  has_next: boolean
+  has_previous: boolean
+}
+export interface GamesResponse {
+  success: boolean
+  data?: {
+    games: Game[]
+    pagination?: GamesPagination
+  }
+  message?: string
+}
 
 export async function fetchAllGames(
   platform: string | null = null,
@@ -7,14 +23,9 @@ export async function fetchAllGames(
   is_sale: boolean | null = null,
   sort_by: string | null = null,
   search: string | null = null,
-): Promise<{
-  success: boolean
-  games?: BasicGame[]
-  message?: string
-}> {
-  const authStore = useAuthStore()
-  const token = authStore.token
-
+  page: number = 1,
+  page_size: number = 50,
+): Promise<GamesResponse> {
   try {
     const params = new URLSearchParams()
     if (platform) params.append('platform', platform)
@@ -22,6 +33,8 @@ export async function fetchAllGames(
     if (is_sale !== null) params.append('is_sale', is_sale.toString())
     if (sort_by) params.append('sort_by', sort_by)
     if (search) params.append('search', search)
+    params.append('page', page.toString())
+    params.append('page_size', page_size.toString())
 
     const response = await fetch(`/api/games/all/?${params.toString()}`, {
       method: 'GET',
@@ -36,7 +49,13 @@ export async function fetchAllGames(
     }
 
     const data = await response.json()
-    return { success: true, games: data.data as BasicGame[] }
+    return {
+      success: true,
+      data: {
+        games: data.data.games as Game[],
+        pagination: data.data.pagination as GamesPagination,
+      },
+    }
   } catch (error) {
     console.error('Error fetching games:', error)
     return { success: false, message: 'An unexpected error occurred while fetching games' }
