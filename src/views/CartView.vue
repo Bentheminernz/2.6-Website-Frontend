@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { removeGameFromCart } from '@/utils/gameCartEdit'
 
 const authStore = useAuthStore()
 
 onMounted(() => {
-  if (!authStore.userCart) {
-    authStore.fetchUserCart()
-  }
+  authStore.fetchUserCart()
 })
 
 const handleRemoveFromCart = async (itemId: number) => {

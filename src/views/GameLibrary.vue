@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { BasicGame } from '../types/Game'
+import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import GameCard from '@/components/GameCard.vue'
 import GameCardSkeleton from '@/components/GameCardSkeleton.vue'
