@@ -15,7 +15,9 @@ const props = withDefaults(
 </script>
 
 <template>
-  <div class="card bg-base-100 shadow-xl hover:scale-102 active:scale-98 transition-transform duration-300">
+  <div
+    class="card bg-base-100 shadow-xl hover:scale-102 active:scale-98 transition-transform duration-300"
+  >
     <RouterLink :to="`/games/${props.game.id}`">
       <figure>
         <img
@@ -32,9 +34,13 @@ const props = withDefaults(
         </div>
 
         <div v-else-if="showAddToCart">
-          <p class="text-md font-bold line-through mr-2 text-gray-400/80">${{ props.game.price }}</p>
+          <p class="text-md font-bold line-through mr-2 text-gray-400/80">
+            ${{ props.game.price }}
+          </p>
           <p class="text-xl font-bold text-red-500">${{ props.game.sale_price }}</p>
-          <p class="text-sm text-gray-500" v-if="props.game.sale_end_date">Sale ends on {{ new Date(props.game.sale_end_date).toLocaleDateString() }}</p>
+          <p class="text-sm text-gray-500" v-if="props.game.sale_end_date">
+            Sale ends on {{ new Date(props.game.sale_end_date).toLocaleDateString() }}
+          </p>
         </div>
       </div>
     </RouterLink>
