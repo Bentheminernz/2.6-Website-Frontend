@@ -32,7 +32,7 @@ const getPlatformDisplayName = (platform: string): string => {
 }
 
 const isOwned = computed(() => {
-  return authStore.ownedGames.some(game => game.game.id === gameId)
+  return authStore.ownedGames.some((game) => game.game.id === gameId)
 })
 </script>
 

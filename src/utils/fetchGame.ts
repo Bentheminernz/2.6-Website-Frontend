@@ -1,4 +1,5 @@
 import type { Game } from '@/types/Game'
+import { useAuthStore } from '@/stores/authStore'
 
 export interface GamesPagination {
   current_page: number
@@ -21,16 +22,20 @@ export async function fetchAllGames(
   platform: string | null = null,
   genre: string | null = null,
   is_sale: boolean | null = null,
+  hide_owned: boolean | null = null,
   sort_by: string | null = null,
   search: string | null = null,
   page: number = 1,
   page_size: number = 50,
 ): Promise<GamesResponse> {
+  const authStore = useAuthStore()
+
   try {
     const params = new URLSearchParams()
     if (platform) params.append('platform', platform)
     if (genre) params.append('genre', genre)
     if (is_sale !== null) params.append('is_sale', is_sale.toString())
+    if (hide_owned !== null) params.append('hide_owned', hide_owned.toString())
     if (sort_by) params.append('sort_by', sort_by)
     if (search) params.append('search', search)
     params.append('page', page.toString())
@@ -40,6 +45,7 @@ export async function fetchAllGames(
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...(authStore.token && { Authorization: `Token ${authStore.token}` }),
       },
     })
 
