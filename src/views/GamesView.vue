@@ -191,12 +191,12 @@ const resetFiltersAndFetch = async () => {
     ></div>
 
     <div
-      class="bg-base-200 p-6 overflow-y-auto rounded-2xl shadow-lg z-50 transition-transform duration-300 ease-in-out"
+      class="bg-base-200 p-6 overflow-y-auto lg:rounded-2xl rounded-tr-3xl rounded-br-3xl shadow-lg z-50 transition-transform duration-300 ease-in-out"
       :class="{
         'lg:w-72 lg:static lg:translate-x-0': true,
         'fixed top-0 left-0 h-full w-80 max-w-[85vw]': true,
         'transform -translate-x-full': !isMobileFiltersOpen,
-        'transform translate-x-0': isMobileFiltersOpen
+        'transform translate-x-0': isMobileFiltersOpen,
       }"
     >
       <button
@@ -338,7 +338,7 @@ const resetFiltersAndFetch = async () => {
       </div>
 
       <div v-if="gamesReponse.success">
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <GameCard v-for="game in gamesReponse.data?.games" :key="game.id" :game="game" />
         </div>
 

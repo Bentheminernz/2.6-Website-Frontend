@@ -1,5 +1,33 @@
 import type { Game } from './Game'
 
+export interface Address {
+  id?: number
+  street_address: string
+  suburb: string
+  city: string
+  postcode: string
+  country: string
+}
+
+export interface CardDetails {
+  id?: number
+  cardNumber: string
+  expiryDate: string
+  cvv: string
+  nameOnCard: string
+}
+
+export interface CheckoutFormData {
+  firstName: string
+  lastName: string
+  email: string
+  address: Address
+  cardDetails: CardDetails
+  agreeToTermsAndPrivacy: boolean
+  saveCard: boolean
+  saveAddress: boolean
+}
+
 export interface User {
   id: number
   username: string
@@ -8,6 +36,8 @@ export interface User {
   last_name: string
   cart_items: BasicCartItem[]
   cart_subtotal: number
+  credit_cards: CardDetails[]
+  addresses: Address[]
 }
 
 export interface BasicCartItem {

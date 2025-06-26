@@ -1,0 +1,62 @@
+import { useAuthStore } from '@/stores/authStore'
+import type { CheckoutFormData } from '@/types/User'
+import type { OrderResponse } from '@/types/Game';
+
+export async function createOrder(
+  formData: CheckoutFormData,
+): Promise<{ success: boolean; message?: string; data?: OrderResponse }> {
+  const authStore = useAuthStore()
+
+  try {
+    const response = await fetch('/api/order/create/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${authStore.token}`,
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        form_data: formData,
+        game_ids: authStore.userCart?.cart_items.map((item) => item.game.id) || [],
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      return { success: false, message: errorData.message || 'Failed to create order' }
+    }
+
+    const data = await response.json()
+    return { success: true, data }
+  } catch (error) {
+    console.error('Error creating order:', error)
+    return { success: false, message: 'An error occurred while creating the order' }
+  }
+}
+
+export async function fetchOrderDetails(orderId: string): Promise<{ success: boolean; message?: string; data?: any }> {
+  const authStore = useAuthStore()
+
+  try {
+    const response = await fetch('/api/order/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${authStore.token}`,
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ order_id: orderId }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      return { success: false, message: errorData.message || 'Failed to fetch order details' }
+    }
+    const data = await response.json()
+
+    return { success: true, data: data.data }
+  } catch (error) {
+    console.error('Error fetching order details:', error)
+    return { success: false, message: 'An error occurred while fetching order details' }
+  }
+}
