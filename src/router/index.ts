@@ -30,6 +30,11 @@ const router = createRouter({
       component: () => import('../views/CheckoutView.vue'),
     },
     {
+      path: '/order/:orderId',
+      name: 'orderSuccess',
+      component: () => import('../views/OrderSuccessView.vue'),
+    },
+    {
       path: '/library',
       name: 'library',
       component: () => import('../views/GameLibrary.vue'),

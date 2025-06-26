@@ -99,7 +99,9 @@ const handleRemoveFromCart = async (itemId: number) => {
           </div>
         </div>
 
-        <button class="btn btn-primary btn-block mt-6">Proceed to Checkout</button>
+        <RouterLink to="/checkout" class="btn btn-primary btn-block mt-4">
+          Proceed to Checkout
+        </RouterLink>
       </div>
     </div>
   </div>
