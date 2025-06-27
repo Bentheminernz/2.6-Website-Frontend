@@ -9,8 +9,16 @@ export interface Address {
   country: string
 }
 
-export interface CardDetails {
+export interface CreditCard {
   id?: number
+  nameOnCard: string
+  lastFourDigits: string
+  cardBrand: string
+  expiryDate: string
+  cardNumber: string
+}
+
+export interface CardDetails {
   cardNumber: string
   expiryDate: string
   cvv: string
@@ -36,7 +44,7 @@ export interface User {
   last_name: string
   cart_items: BasicCartItem[]
   cart_subtotal: number
-  credit_cards: CardDetails[]
+  credit_cards: CreditCard[]
   addresses: Address[]
 }
 

@@ -1,4 +1,4 @@
-import type { OwnedGame } from "./User"
+import type { OwnedGame } from './User'
 
 export interface BasicCartItemGame {
   id: number
@@ -74,7 +74,7 @@ export interface OrderItem {
 }
 
 export interface OrderResponse {
-  id: number
+  id: string
   total_amount: string
   order_date: string
   order_items: OrderItem[]
