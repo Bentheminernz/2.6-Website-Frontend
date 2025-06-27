@@ -2,7 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import { PhShieldSlash } from '@phosphor-icons/vue'
+import { PhCheckCircle } from '@phosphor-icons/vue'
 import type { CheckoutFormData } from '@/types/User'
 import { createOrder } from '@/utils/OrderAPIs'
 import type { OrderResponse } from '@/types/Game'
@@ -111,50 +111,15 @@ function formatExpiryDate(value: string) {
 }
 
 const handleCreateOrder = async () => {
-  if (!validateForm()) {
-    console.error('Form validation failed:', errors.value)
-    return
+  if (!validateForm()) return
+
+  const response = await createOrder({ ...formData.value })
+  createOrderResponse.value = response
+
+  const orderId = response.data?.id
+  if (response.success && orderId) {
+    router.push(`/order/${orderId}`)
   }
-
-  try {
-    const orderData = {
-      ...formData.value,
-    }
-    const response = await createOrder(orderData)
-    createOrderResponse.value = response
-
-    if (response.success && response.data) {
-      const orderId = response.data.id
-
-      if (orderId) {
-        router.push({
-          path: `/order/${orderId}`,
-        })
-      }
-    } else {
-      console.error('Order creation failed:', response.message)
-    }
-  } catch (error) {
-    console.error('Error creating order:', error)
-  }
-}
-
-const fillFieldsWithTestData = () => {
-  formData.value.firstName = 'John'
-  formData.value.lastName = 'Doe'
-  formData.value.email = 'john.doe@example.com'
-  formData.value.address.street_address = '123 Main Street'
-  formData.value.address.suburb = 'Downtown'
-  formData.value.address.city = 'New York'
-  formData.value.address.postcode = '10001'
-  formData.value.address.country = 'US'
-  formData.value.cardDetails.nameOnCard = 'John Doe'
-  formData.value.cardDetails.cardNumber = '1234 5678 9012 3456'
-  formData.value.cardDetails.expiryDate = '12/25'
-  formData.value.cardDetails.cvv = '123'
-  formData.value.agreeToTermsAndPrivacy = true
-  formData.value.saveCard = true
-  formData.value.saveAddress = true
 }
 
 const selectedSavedAddress = ref('')
@@ -184,9 +149,9 @@ const handleCreditCardSelection = (selectedCard: any) => {
     }
 
     formData.value.cardDetails = {
-      cardNumber: selectedCard.cardNumber,
+      cardNumber: selectedCard.cardNumber || `****${selectedCard.lastFourDigits}`,
       expiryDate: formattedExpiryDate,
-      cvv: selectedCard.cvv,
+      cvv: '',
       nameOnCard: selectedCard.nameOnCard,
     }
   }
@@ -376,9 +341,7 @@ const resetSavedCardSelection = () => {
               id="savedCard"
               class="select w-full"
               @change="
-                handleCreditCardSelection(
-                  selectedSavedCard ? JSON.parse(selectedSavedCard) : null,
-                )
+                handleCreditCardSelection(selectedSavedCard ? JSON.parse(selectedSavedCard) : null)
               "
             >
               <option disabled value="">Select a saved card</option>
@@ -387,7 +350,7 @@ const resetSavedCardSelection = () => {
                 :key="card.id"
                 :value="JSON.stringify(card)"
               >
-                {{ card.nameOnCard }} - {{ card.cardNumber.replace(/\d(?=\d{4})/g, '*') }}
+                {{ card.nameOnCard }} - {{ card.cardBrand }} ****{{ card.lastFourDigits }}
               </option>
             </select>
           </div>
@@ -416,8 +379,10 @@ const resetSavedCardSelection = () => {
               maxlength="19"
               required
               @input="
-                formData.cardDetails.cardNumber = formatCardNumber(formData.cardDetails.cardNumber),
-                resetSavedCardSelection()
+                ((formData.cardDetails.cardNumber = formatCardNumber(
+                  formData.cardDetails.cardNumber,
+                )),
+                resetSavedCardSelection())
               "
             />
           </div>
@@ -434,10 +399,10 @@ const resetSavedCardSelection = () => {
                 maxlength="5"
                 required
                 @input="
-                  formData.cardDetails.expiryDate = formatExpiryDate(
+                  ((formData.cardDetails.expiryDate = formatExpiryDate(
                     formData.cardDetails.expiryDate,
-                  ),
-                  resetSavedCardSelection()
+                  )),
+                  resetSavedCardSelection())
                 "
               />
             </div>
@@ -452,7 +417,6 @@ const resetSavedCardSelection = () => {
                 placeholder="123"
                 maxlength="4"
                 required
-                @input="resetSavedCardSelection"
               />
             </div>
           </div>
@@ -502,18 +466,9 @@ const resetSavedCardSelection = () => {
         </fieldset>
 
         <button
-          type="button"
-          class="btn btn-secondary btn-lg w-full mb-4"
-          @click="fillFieldsWithTestData"
-        >
-          Fill with Test Data
-        </button>
-
-        <button
           type="submit"
           class="btn btn-primary btn-lg w-full"
-          :disabled="isCompleteOrderDisabled"
-          @click="handleCreateOrder"
+          :disabled="isCompleteOrderDisabled || authStore.userCart?.cart_items.length === 0"
         >
           Complete Order
         </button>
@@ -567,17 +522,13 @@ const resetSavedCardSelection = () => {
           <span>${{ (authStore.userCart?.cart_subtotal + 5.95).toFixed(2) }}</span>
         </div>
 
-        <div class="mt-6 p-3 bg-error/10 rounded-lg">
-          <div class="flex items-center gap-2 text-error text-sm">
-            <PhShieldSlash :size="24" />
-            <span class="font-medium">Not Secure Checkout</span>
+        <div class="mt-6 p-3 bg-success/10 rounded-lg">
+          <div class="flex items-center gap-2 text-success text-sm">
+            <PhCheckCircle :size="24" />
+            <span class="font-medium">Secure Checkout</span>
           </div>
           <p class="text-xs text-base-content/70 mt-1">
-            Your payment details are <u><b>not</b></u> stored securely. Do not enter actual card
-            details, this is a demo, which lacks secure payment processing.
-            <br />
-            Also note that there is no payment processing at all, this is just a demo checkout.
-            It'll say success but, no payment is actually processed.
+            Your payment details (excluding CVV) are stored securely. CVV is required for payment verification but is <b>never</b> stored. Saved cards can autofill for convenience but still require CVV entry.
           </p>
         </div>
       </div>

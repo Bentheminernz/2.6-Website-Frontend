@@ -174,8 +174,12 @@ export const useAuthStore = defineStore('auth', () => {
   function logout() {
     token.value = ''
     user.value = null
+    userCart.value = null
+    ownedGames.value = []
+    error.value = ''
+    isLoading.value = false
     localStorage.removeItem('auth_token')
-    // router.push({ name: 'Login' });
+    router.push('/')
   }
 
   return {

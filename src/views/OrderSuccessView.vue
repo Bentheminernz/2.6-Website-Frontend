@@ -1,30 +1,32 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore';
-import { fetchOrderDetails } from '@/utils/OrderAPIs';
-import type { OrderResponse } from '../types/Game';
-import { PhCheckCircle } from '@phosphor-icons/vue';
+import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
+import { fetchOrderDetails } from '@/utils/OrderAPIs'
+import type { OrderResponse } from '../types/Game'
+import { PhCheckCircle } from '@phosphor-icons/vue'
 
-const route = useRoute();
-const router = useRouter();
-const authStore = useAuthStore();
+const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
 
-const orderId = route.params.orderId as string;
-const orderDetails = ref<{ success: boolean; messages?: string; data?: OrderResponse}>({ success: false });
+const orderId = route.params.orderId as string
+const orderDetails = ref<{ success: boolean; messages?: string; data?: OrderResponse }>({
+  success: false,
+})
 
 onMounted(async () => {
   if (!authStore.isAuthenticated) {
-    router.push({ name: 'Home' });
-    return;
+    router.push({ name: 'Home' })
+    return
   }
 
   try {
-    const response = await fetchOrderDetails(orderId);
-    orderDetails.value = response;
-    console.log('Order Details:', orderDetails);
+    const response = await fetchOrderDetails(orderId)
+    orderDetails.value = response
+    console.log('Order Details:', orderDetails)
   } catch (error) {
-    console.error('Error fetching order details:', error);
+    console.error('Error fetching order details:', error)
   }
 })
 </script>
@@ -65,16 +67,12 @@ onMounted(async () => {
             <p class="text-sm text-gray-600 mb-1">
               {{ item.game.description.substring(0, 100) }}...
             </p>
-            <p class="text-sm text-gray-500">
-              Purchased for: ${{ item.purchase_price }}
-            </p>
+            <p class="text-sm text-gray-500">Purchased for: ${{ item.purchase_price }}</p>
           </div>
         </div>
       </div>
 
-      <RouterLink to="/library" class="btn btn-primary w-full mt-4">
-        Go to Library
-      </RouterLink>
+      <RouterLink to="/library" class="btn btn-primary w-full mt-4"> Go to Library </RouterLink>
     </div>
   </div>
 
