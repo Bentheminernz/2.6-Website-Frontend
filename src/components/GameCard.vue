@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps } from 'vue'
+import { computed, defineProps } from 'vue'
 import type { Game } from '../types/Game'
 import CartButton from '@/components/CartButton.vue'
 
@@ -12,6 +12,11 @@ const props = withDefaults(
     showAddToCart: true,
   },
 )
+
+const isPreorder = computed(() => {
+  const currentDate = new Date()
+  return Boolean(props.game.release_date && new Date(props.game.release_date) > currentDate)
+})
 </script>
 
 <template>
@@ -46,9 +51,12 @@ const props = withDefaults(
     </RouterLink>
     <div class="card-body pt-0">
       <div class="card-actions justify-end">
-        <CartButton v-if="showAddToCart" :game-id="props.game.id" />
+        <CartButton v-if="showAddToCart" :game-id="props.game.id" :is-game-preorder="isPreorder" />
 
-        <button v-else class="btn btn-primary">Download</button>
+        <button v-else class="btn btn-primary" :disabled="isPreorder">Download</button>
+        <p v-if="isPreorder" class="text-sm text-gray-500">
+          This game is a preorder and will be available on {{ new Date(props.game.release_date).toLocaleDateString() }}
+        </p>
       </div>
     </div>
   </div>

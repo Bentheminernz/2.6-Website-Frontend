@@ -1,5 +1,6 @@
 import type { BasicCartItem } from '@/types/User'
 import { useAuthStore } from '@/stores/authStore'
+import { useRouter } from 'vue-router'
 
 export async function addGameToCart(
   gameId: number,
