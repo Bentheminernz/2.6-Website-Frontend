@@ -81,6 +81,16 @@ export const useAuthStore = defineStore('auth', () => {
 
       const data = await response.json()
 
+      if (data.detail === 'Invalid token.') {
+        token.value = ''
+        user.value = null
+        userCart.value = null
+        ownedGames.value = []
+        localStorage.removeItem('auth_token')
+        router.push('/')
+        return
+      }
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to fetch user data')
       }
@@ -171,6 +181,42 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function createUser(username: string, email: string, password: string, firstname: string, lastname: string) {
+    isLoading.value = true
+    error.value = ''
+
+    try {
+      const response = await fetch('/api/user/create/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ username, email, password, first_name: firstname, last_name: lastname }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'User creation failed')
+      }
+
+      if (data.success) {
+        await login(username, password)
+      } else {
+        throw new Error(data.message || 'User creation failed')
+      }
+    } catch (err: Error | unknown) {
+      if (err instanceof Error) {
+        error.value = err.message
+      } else {
+        error.value = 'An unexpected error occurred'
+      }
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   function logout() {
     token.value = ''
     user.value = null
@@ -195,6 +241,7 @@ export const useAuthStore = defineStore('auth', () => {
     initialize,
     fetchUserCart,
     fetchOwnedGames,
+    createUser,
     logout,
   }
 })

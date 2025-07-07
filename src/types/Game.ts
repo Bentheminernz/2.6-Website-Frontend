@@ -59,7 +59,6 @@ export interface Game {
   developer: string
   publisher: string
   release_date: string
-  trailer_url?: string
   is_sale?: boolean
   sale_price?: number
   sale_start_date?: string

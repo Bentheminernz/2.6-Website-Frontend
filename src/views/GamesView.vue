@@ -8,7 +8,7 @@ import GameCard from '@/components/GameCard.vue'
 import GameCardSkeleton from '@/components/GameCardSkeleton.vue'
 import { fetchSearchSuggestions } from '@/utils/searchSuggestions'
 import type { SearchSuggestion } from '@/utils/searchSuggestions'
-import { PhWarningCircle, PhFunnel, PhX } from '@phosphor-icons/vue'
+import { PhWarningCircle, PhFunnel, PhX, PhMagnifyingGlass } from '@phosphor-icons/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -68,6 +68,11 @@ watch(searchQuery, (newQuery) => {
   fetchSuggestions(newQuery)
 })
 
+const onSearchEnter = () => {
+  currentPage.value = 1
+  updateURL()
+}
+
 const updateURL = () => {
   const query: Record<string, string> = {}
 
@@ -93,16 +98,6 @@ watch(
     updateURL()
   },
 )
-
-let searchTimeout: ReturnType<typeof setTimeout>
-watch(searchQuery, (newQuery) => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    currentPage.value = 1
-    updateURL()
-    handleFetchGames()
-  }, 100)
-})
 
 watch(currentPage, () => {
   updateURL()
@@ -208,29 +203,37 @@ const resetFiltersAndFetch = async () => {
 
       <h2 class="text-xl font-bold mb-6">Filters</h2>
 
-      <div class="mb-6">
+      <div class="mb-6 relative">
         <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search games..."
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div class="relative">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search games..."
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+            @keyup.enter="onSearchEnter"
+          />
+          <button
+            type="button"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 focus:outline-none hover:cursor-pointer hover:scale-105 transition-all duration-300"
+            @click="onSearchEnter"
+            aria-label="Search"
+          >
+            <PhMagnifyingGlass class="w-5 h-5" />
+          </button>
+        </div>
 
         <ul
           v-if="suggestions.length > 0"
-          class="mt-2 bg-base-300 border border-gray-300/50 rounded-md shadow-lg"
+          class="mt-2 bg-base-200 border border-gray-300/50 rounded-md shadow-lg"
         >
           <li
             v-for="suggestion in suggestions"
             :key="suggestion.id"
-            class="px-3 py-2 hover:bg-base-100 cursor-pointer"
+            class="px-3 py-2 hover:bg-base-300 rounded-md cursor-pointer"
             @click="router.push(`/games/${suggestion.id}`)"
           >
             {{ suggestion.title }}
-          </li>
-          <li v-if="isLoadingSuggestions" class="px-3 py-2 text-gray-500">
-            Loading suggestions...
           </li>
           <li
             v-if="suggestions.length === 0 && !isLoadingSuggestions"
@@ -321,7 +324,7 @@ const resetFiltersAndFetch = async () => {
       </div>
     </div>
 
-    <div class="flex-1 p-6 overflow-y-auto lg:ml-0">
+    <div class="flex-1 p-6 lg:overflow-y-auto lg:ml-0">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold">
           Games <span v-if="searchQuery">- "{{ searchQuery }}"</span>
@@ -338,7 +341,7 @@ const resetFiltersAndFetch = async () => {
       </div>
 
       <div v-if="gamesReponse.success">
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <GameCard v-for="game in gamesReponse.data?.games" :key="game.id" :game="game" />
         </div>
 

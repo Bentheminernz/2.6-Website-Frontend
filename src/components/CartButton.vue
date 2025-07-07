@@ -1,16 +1,24 @@
-<script lang="ts" setup>
+x<script lang="ts" setup>
 import { ref, computed, defineProps } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { addGameToCart, removeGameFromCart } from '@/utils/gameCartEdit'
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   gameId: number
+  isGamePreorder: boolean
 }>()
 const authStore = useAuthStore()
+const router = useRouter()
 
 const hoveredGameId = ref<number | null>(null)
 
 const handleAddToCart = async () => {
+  if (!authStore.isAuthenticated) {
+    await router.push({ name: 'login', query: { redirect: '/games' } })
+    return
+  }
+
   try {
     const result = await addGameToCart(props.gameId)
     if (result.success) {
@@ -25,6 +33,11 @@ const handleAddToCart = async () => {
 }
 
 const handleRemoveFromCart = async () => {
+  if (!authStore.isAuthenticated) {
+    await router.push({ name: 'login', query: { redirect: '/games' } })
+    return
+  }
+
   try {
     const result = await removeGameFromCart(props.gameId)
     if (result.success) {
@@ -59,6 +72,8 @@ const getButtonText = (gameId: number): string => {
     return 'Remove from Cart'
   } else if (isGameInCart.value) {
     return 'Added'
+  } else if (props.isGamePreorder) {
+    return 'Pre-order'
   } else {
     return 'Add to Cart'
   }

@@ -54,7 +54,7 @@ const itemsInCart = computed(() => {
       </ul>
     </div>
     <div class="navbar-end">
-      <div class="dropdown dropdown-end">
+      <div class="dropdown dropdown-end" v-if="authStore.isAuthenticated">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle mr-1">
           <div class="indicator">
             <svg
@@ -87,10 +87,11 @@ const itemsInCart = computed(() => {
           </div>
         </div>
       </div>
-      <div class="dropdown dropdown-end">
+
+      <div class="dropdown dropdown-end" v-if="authStore.isAuthenticated">
         <div tabindex="0" role="button" class="btn btn-ghost avatar">
           <PhUser :size="32" />
-          <p class="text-lg font-semibold">{{ authStore.user?.username || 'Guest' }}</p>
+          <p class="text-lg font-semibold">{{ authStore.user?.username }}</p>
         </div>
         <ul
           tabindex="0"
@@ -100,6 +101,11 @@ const itemsInCart = computed(() => {
           <li><RouterLink to="/library">Library</RouterLink></li>
           <li><button @click="authStore.logout">Logout</button></li>
         </ul>
+      </div>
+
+      <div class="dropdown dropdown-end" v-else>
+        <RouterLink to="/login" class="btn btn-secondary btn-outline">Login</RouterLink>
+        <RouterLink to="/register" class="btn btn-primary ml-2">Sign Up</RouterLink>
       </div>
     </div>
   </div>
