@@ -3,6 +3,7 @@ import { ref, computed, defineProps } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { addGameToCart, removeGameFromCart } from '@/utils/gameCartEdit'
 import { useRouter } from 'vue-router';
+import { PhX, PhPlus, PhCheck } from '@phosphor-icons/vue';
 
 const props = defineProps<{
   gameId: number
@@ -102,8 +103,23 @@ const getButtonClass = (gameId: number): string => {
     @mouseenter="hoveredGameId = props.gameId"
     @mouseleave="hoveredGameId = null"
   >
-    <span class="text-white transition-all duration-300 ease-in-out">{{
-      getButtonText(props.gameId)
-    }}</span>
+    <span class="text-white transition-all duration-300 ease-in-out items-center flex">
+      <PhPlus
+        v-if="getButtonText(props.gameId) === 'Add to Cart' || getButtonText(props.gameId) === 'Pre-order'"
+        class="inline-block mr-1"
+      />
+
+      <PhX
+        v-if="getButtonText(props.gameId) === 'Remove from Cart'"
+        class="inline-block mr-1 font-bold"
+      />
+
+      <PhCheck
+        v-if="getButtonText(props.gameId) === 'Added' || getButtonText(props.gameId) === 'Owned'"
+        class="inline-block mr-1"
+      />
+
+      {{getButtonText(props.gameId)}}
+    </span>
   </button>
 </template>

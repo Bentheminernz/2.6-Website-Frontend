@@ -29,6 +29,7 @@ const isPreorder = computed(() => {
           :src="game.image"
           alt="Game Image"
           class="w-full max-h-100 object-cover rounded-t-2xl"
+          loading="lazy"
         />
       </figure>
       <div class="card-body">

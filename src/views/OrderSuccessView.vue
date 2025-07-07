@@ -17,7 +17,7 @@ const orderDetails = ref<{ success: boolean; messages?: string; data?: OrderResp
 
 onMounted(async () => {
   if (!authStore.isAuthenticated) {
-    router.push({ name: 'Home' })
+    router.push({ name: 'games' })
     return
   }
 

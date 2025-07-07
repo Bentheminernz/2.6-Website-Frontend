@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { User, UserCart, OwnedGame } from '@/types/User'
+import { useToastStore } from './toast'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('auth_token') || '')
@@ -11,6 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isLoading = ref(false)
   const error = ref('')
 
+  const toastStore = useToastStore()
   const router = useRouter()
   const isAuthenticated = computed(() => !!token.value)
 
@@ -48,13 +50,15 @@ export const useAuthStore = defineStore('auth', () => {
       await fetchUser()
       await fetchUserCart()
       await fetchOwnedGames()
-      router.push({ name: 'home' })
+      router.push({ name: 'games' })
+      toastStore.showSuccess('Login successful')
     } catch (err: Error | unknown) {
       if (err instanceof Error) {
         error.value = err.message
       } else {
         error.value = 'An unexpected error occurred'
       }
+      toastStore.showError(error.value)
     } finally {
       isLoading.value = false
     }
@@ -92,6 +96,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       if (!response.ok) {
+        toastStore.showError(data.message || 'Failed to fetch user data')
         throw new Error(data.message || 'Failed to fetch user data')
       }
 
@@ -102,6 +107,7 @@ export const useAuthStore = defineStore('auth', () => {
       } else {
         error.value = 'An unexpected error occurred'
       }
+      toastStore.showError(error.value)
     } finally {
       isLoading.value = false
     }
@@ -129,6 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json()
 
       if (!response.ok) {
+        toastStore.showError(data.message || 'Failed to fetch user cart')
         throw new Error(data.message || 'Failed to fetch user cart')
       }
 
@@ -139,6 +146,7 @@ export const useAuthStore = defineStore('auth', () => {
       } else {
         error.value = 'An unexpected error occurred'
       }
+      toastStore.showError(error.value)
     } finally {
       isLoading.value = false
     }
@@ -166,6 +174,7 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json()
 
       if (!response.ok) {
+        toastStore.showError(data.message || 'Failed to fetch owned games')
         throw new Error(data.message || 'Failed to fetch owned games')
       }
 
@@ -176,6 +185,7 @@ export const useAuthStore = defineStore('auth', () => {
       } else {
         error.value = 'An unexpected error occurred'
       }
+      toastStore.showError(error.value)
     } finally {
       isLoading.value = false
     }
@@ -198,12 +208,14 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json()
 
       if (!response.ok) {
+        toastStore.showError(data.message || 'User creation failed')
         throw new Error(data.message || 'User creation failed')
       }
 
       if (data.success) {
         await login(username, password)
       } else {
+        toastStore.showError(data.message || 'User creation failed')
         throw new Error(data.message || 'User creation failed')
       }
     } catch (err: Error | unknown) {
@@ -212,6 +224,7 @@ export const useAuthStore = defineStore('auth', () => {
       } else {
         error.value = 'An unexpected error occurred'
       }
+      toastStore.showError(error.value)
     } finally {
       isLoading.value = false
     }
@@ -226,6 +239,7 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = false
     localStorage.removeItem('auth_token')
     router.push('/')
+    toastStore.showSuccess('Logged out')
   }
 
   return {

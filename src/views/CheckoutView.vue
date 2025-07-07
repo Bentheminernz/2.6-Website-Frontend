@@ -6,6 +6,7 @@ import { PhCheckCircle } from '@phosphor-icons/vue'
 import type { CheckoutFormData } from '@/types/User'
 import { createOrder } from '@/utils/OrderAPIs'
 import type { OrderResponse } from '@/types/Game'
+import TermsAndPrivacyModal from '@/components/TermsAndPrivacyModal.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -159,8 +160,14 @@ const handleCreditCardSelection = (selectedCard: any) => {
 const resetSavedCardSelection = () => {
   selectedSavedCard.value = ''
 }
-</script>
 
+const openTermsAndPrivacyModal = () => {
+  const modal = document.getElementById('termsPrivacyModal') as HTMLDialogElement
+  if (modal) {
+    modal.showModal()
+  }
+}
+</script>
 <template>
   <div class="flex flex-col lg:flex-row gap-8">
     <div class="flex-2 lg:w-2/3 p-8 rounded-lg">
@@ -426,20 +433,24 @@ const resetSavedCardSelection = () => {
           <legend class="fieldset-legend text-lg font-semibold">Terms & Conditions</legend>
 
           <div class="form-control">
-            <label class="label cursor-pointer">
+            <div class="flex items-center gap-2">
               <input
                 type="checkbox"
-                v-model="formData.agreeToTermsAndPrivacy"
+                :checked="formData.agreeToTermsAndPrivacy"
                 class="checkbox checkbox-primary"
                 required
+                readonly
+                tabindex="-1"
+                aria-label="Agree to Terms of Service and Privacy Policy"
+                :disabled="!formData.agreeToTermsAndPrivacy"
               />
-              <span class="label-text"
-                >I agree to the
-                <router-link to="/terms" class="link link-primary">Terms of Service</router-link>
-                and
-                <router-link to="/privacy" class="link link-primary">Privacy Policy</router-link>
+              <span class="label-text">
+                I agree to the
               </span>
-            </label>
+              <span @click.stop.prevent="openTermsAndPrivacyModal" class="link text-blue-500 hover:text-blue-700 cursor-pointer">
+                Terms of Service and Privacy Policy
+              </span>
+            </div>
           </div>
 
           <div class="form-control">
@@ -479,7 +490,7 @@ const resetSavedCardSelection = () => {
       <h2 class="text-2xl font-semibold mb-6">Order Summary</h2>
 
       <div v-if="authStore.userCart?.cart_items && authStore.userCart.cart_items.length > 0">
-        <ul class="mb-4 space-y-3">
+        <ul class="mb-4 space-y-3 max-h-128 overflow-y-auto">
           <li
             v-for="item in authStore.userCart?.cart_items"
             :key="item.id"
@@ -543,4 +554,6 @@ const resetSavedCardSelection = () => {
       </div>
     </div>
   </div>
+
+  <TermsAndPrivacyModal @agreed="formData.agreeToTermsAndPrivacy = true" />
 </template>

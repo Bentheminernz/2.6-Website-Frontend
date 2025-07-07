@@ -7,13 +7,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      name: 'games',
+      component: () => import('../views/GamesView.vue'),
     },
     {
       path: '/login',
@@ -24,11 +19,6 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: () => import('../views/SignUpView.vue'),
-    },
-    {
-      path: '/games',
-      name: 'games',
-      component: () => import('../views/GamesView.vue'),
     },
     {
       path: '/games/:id',
@@ -78,9 +68,9 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.name === 'login' && authStore.isAuthenticated) {
-    next({ name: 'home' })
+    next({ name: 'games' })
   } else if (to.name === 'register' && authStore.isAuthenticated) {
-    next({ name: 'home' })
+    next({ name: 'games' })
   } else {
     next()
   }

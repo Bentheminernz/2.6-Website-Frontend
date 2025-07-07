@@ -34,27 +34,15 @@ const itemsInCart = computed(() => {
           tabindex="0"
           class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
-          <li><a>About</a></li>
           <li>
-            <RouterLink to="/games" class="justify-between"> All Games </RouterLink>
+            <RouterLink to="/cart">Cart ({{ itemsInCart }} items)</RouterLink>
           </li>
-          <li><a>About</a></li>
-          <li><a>Contact</a></li>
         </ul>
       </div>
       <RouterLink to="/" class="btn btn-ghost text-xl">Super Games</RouterLink>
     </div>
-    <div class="navbar-center hidden lg:flex">
-      <ul class="menu menu-horizontal px-1">
-        <li><a>About</a></li>
-        <li>
-          <RouterLink to="/games" class="justify-between"> All Games </RouterLink>
-        </li>
-        <li><a>Contact</a></li>
-      </ul>
-    </div>
     <div class="navbar-end">
-      <div class="dropdown dropdown-end" v-if="authStore.isAuthenticated">
+      <div class="dropdown dropdown-end lg:block hidden" v-if="authStore.isAuthenticated">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle mr-1">
           <div class="indicator">
             <svg
@@ -82,7 +70,12 @@ const itemsInCart = computed(() => {
             <span class="text-lg font-bold">{{ itemsInCart }} items</span>
             <span class="text-info">Subtotal: ${{ authStore.user?.cart_subtotal }}</span>
             <div class="card-actions">
-              <RouterLink to="/cart" class="btn btn-primary btn-block"> View cart </RouterLink>
+              <button
+                class="btn btn-secondary btn-block"
+                :disabled="itemsInCart === 0"
+              >
+                <RouterLink to="/cart">View Cart</RouterLink>
+              </button>
             </div>
           </div>
         </div>

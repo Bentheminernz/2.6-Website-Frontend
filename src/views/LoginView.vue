@@ -14,7 +14,7 @@ const error = ref<string | null>(null);
 const handleLogin = async () => {
   try {
     await authStore.login(username.value, password.value);
-    router.push({ name: 'home' });
+    router.push({ name: 'games' });
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message;
