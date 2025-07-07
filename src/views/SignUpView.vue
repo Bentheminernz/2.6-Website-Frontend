@@ -61,7 +61,7 @@ const doPasswordsMatch = computed(() => {
           async () => {
             try {
               await authStore.createUser(username, email, password, firstName, lastName);
-              router.push({ name: 'home' });
+              router.push({ name: 'games' });
             } catch (err) {
               console.error(err);
             }

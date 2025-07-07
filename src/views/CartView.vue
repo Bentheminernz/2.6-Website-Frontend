@@ -46,6 +46,7 @@ const handleRemoveFromCart = async (itemId: number) => {
                   :src="item.game.image"
                   :alt="item.game.title"
                   class="w-20 h-20 object-cover rounded-2xl"
+                  loading="lazy"
                 />
                 <div>
                   <RouterLink :to="`/games/${item.game.id}`">
@@ -63,7 +64,6 @@ const handleRemoveFromCart = async (itemId: number) => {
               <div class="flex items-center space-x-4">
                 <div class="text-right">
                   <p class="text-lg font-bold">${{ item.game.price }}</p>
-                  <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
                 </div>
 
                 <button @click="handleRemoveFromCart(item.game.id)" class="btn btn-error btn-sm">

@@ -30,7 +30,7 @@ const sortBy = ref<'price_asc' | 'price_desc' | 'release_date' | 'title'>(
 const paginationOptions = ref<12 | 24 | 48 | 96>(
   (() => {
     const perPage = parseInt(route.query.perPage as string)
-    return [1, 12, 24, 48, 96].includes(perPage) ? (perPage as 12 | 24 | 48 | 96) : 24
+    return [12, 24, 48, 96].includes(perPage) ? (perPage as 12 | 24 | 48 | 96) : 12
   })(),
 )
 const hideOwnedGames = ref(route.query.hideOwned === 'true')
@@ -327,7 +327,7 @@ const resetFiltersAndFetch = async () => {
     <div class="flex-1 p-6 lg:overflow-y-auto lg:ml-0">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-3xl font-bold">
-          Games <span v-if="searchQuery">- "{{ searchQuery }}"</span>
+          Games <span v-if="route.query.search">- "{{ route.query.search }}"</span>
         </h1>
 
         <button

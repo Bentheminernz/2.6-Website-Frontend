@@ -1,11 +1,18 @@
 import { useAuthStore } from '@/stores/authStore'
 import type { CheckoutFormData } from '@/types/User'
 import type { OrderResponse } from '@/types/Game'
+import { useToastStore } from '@/stores/toast'
 
 export async function createOrder(
   formData: CheckoutFormData,
 ): Promise<{ success: boolean; message?: string; data?: OrderResponse }> {
   const authStore = useAuthStore()
+  const toastStore = useToastStore()
+
+  if (!authStore.token) {
+    toastStore.showError('You must be logged in to create an order')
+    return { success: false, message: 'User not authenticated' }
+  }
 
   try {
     const response = await fetch('/api/order/create/', {
@@ -23,10 +30,12 @@ export async function createOrder(
 
     if (!response.ok) {
       const errorData = await response.json()
+      toastStore.showError(errorData.message || 'Failed to create order')
       return { success: false, message: errorData.message || 'Failed to create order' }
     }
 
     const rawResponse = await response.json()
+    toastStore.showSuccess('Order created successfully')
     return { success: true, data: rawResponse.data as OrderResponse }
   } catch (error) {
     console.error('Error creating order:', error)
@@ -38,6 +47,12 @@ export async function fetchOrderDetails(
   orderId: string,
 ): Promise<{ success: boolean; message?: string; data?: OrderResponse }> {
   const authStore = useAuthStore()
+  const toastStore = useToastStore()
+
+  if (!authStore.token) {
+    toastStore.showError('You must be logged in to fetch order details')
+    return { success: false, message: 'User not authenticated' }
+  }
 
   try {
     const response = await fetch('/api/order/', {
@@ -52,6 +67,7 @@ export async function fetchOrderDetails(
 
     if (!response.ok) {
       const errorData = await response.json()
+      toastStore.showError(errorData.message || 'Failed to fetch order details')
       return { success: false, message: errorData.message || 'Failed to fetch order details' }
     }
     const data = await response.json()
@@ -60,6 +76,7 @@ export async function fetchOrderDetails(
     return { success: true, data: data.data }
   } catch (error) {
     console.error('Error fetching order details:', error)
+    toastStore.showError('An error occurred while fetching order details')
     return { success: false, message: 'An error occurred while fetching order details' }
   }
 }
@@ -70,6 +87,12 @@ export async function fetchUserOrders(): Promise<{
   data?: OrderResponse[]
 }> {
   const authStore = useAuthStore()
+  const toastStore = useToastStore()
+
+  if (!authStore.token) {
+    toastStore.showError('You must be logged in to fetch user orders')
+    return { success: false, message: 'User not authenticated' }
+  }
 
   try {
     const response = await fetch('/api/order/', {
@@ -83,6 +106,7 @@ export async function fetchUserOrders(): Promise<{
 
     if (!response.ok) {
       const errorData = await response.json()
+      toastStore.showError(errorData.message || 'Failed to fetch user orders')
       return { success: false, message: errorData.message || 'Failed to fetch user orders' }
     }
 
@@ -90,6 +114,7 @@ export async function fetchUserOrders(): Promise<{
     return { success: true, data: data.data as OrderResponse[] }
   } catch (error) {
     console.error('Error fetching user orders:', error)
+    toastStore.showError('An error occurred while fetching user orders')
     return { success: false, message: 'An error occurred while fetching user orders' }
   }
 }
