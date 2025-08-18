@@ -13,6 +13,14 @@ const gameId = Number(route.params.id as string)
 
 const gameResponse = ref<{ success: boolean; data?: Game; message?: string }>({ success: false })
 
+const isPreorder = computed(() => {
+  const currentDate = new Date()
+  return Boolean(
+    gameResponse.value.data?.release_date &&
+      new Date(gameResponse.value.data.release_date) > currentDate,
+  )
+})
+
 onMounted(async () => {
   try {
     const response = await fetchSpecificGame(gameId)
@@ -91,7 +99,12 @@ const isOwned = computed(() => {
           </button>
         </div>
 
-        <CartButton :game-id="gameResponse.data?.id ?? 0" v-else class="mt-4" />
+        <CartButton
+          :game-id="gameResponse.data?.id ?? 0"
+          :is-game-preorder="isPreorder"
+          v-else
+          class="mt-4"
+        />
       </div>
     </div>
 

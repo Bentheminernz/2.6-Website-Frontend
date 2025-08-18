@@ -1,5 +1,3 @@
-import type { OwnedGame } from './User'
-
 export interface BasicCartItemGame {
   id: number
 }

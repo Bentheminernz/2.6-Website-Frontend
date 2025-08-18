@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
@@ -29,7 +28,7 @@ const router = createRouter({
       path: '/cart',
       name: 'cart',
       component: () => import('../views/CartView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/checkout',
@@ -74,6 +73,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-});
+})
 
 export default router

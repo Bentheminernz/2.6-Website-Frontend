@@ -57,7 +57,7 @@ const fetchSuggestions = async (query: string) => {
     } else {
       suggestions.value = []
     }
-  } catch (e) {
+  } catch {
     suggestions.value = []
   } finally {
     isLoadingSuggestions.value = false

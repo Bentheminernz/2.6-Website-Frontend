@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import Navbar from './components/navbar.vue'
-import Toast from './components/Toast.vue';
+import Toast from './components/Toast.vue'
 </script>
 
 <template>

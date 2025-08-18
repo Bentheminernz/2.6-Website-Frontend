@@ -39,7 +39,7 @@ const createOrderResponse = ref<{ success: boolean; message?: string; data?: Ord
 const errors = ref({})
 
 const validateForm = () => {
-  const newErrors: any = {}
+  const newErrors: Record<string, string> = {}
 
   if (!formData.value.firstName.trim()) newErrors.firstName = 'First name is required'
   if (!formData.value.lastName.trim()) newErrors.lastName = 'Last name is required'
@@ -124,7 +124,15 @@ const handleCreateOrder = async () => {
 }
 
 const selectedSavedAddress = ref('')
-const handleAddressSelection = (selectedAddress: any) => {
+type Address = {
+  street_address: string
+  suburb: string
+  city: string
+  postcode: string
+  country: string
+}
+
+const handleAddressSelection = (selectedAddress: Address | null) => {
   if (selectedAddress) {
     formData.value.address = {
       street_address: selectedAddress.street_address,
@@ -140,7 +148,16 @@ const resetSavedAddressSelection = () => {
 }
 
 const selectedSavedCard = ref('')
-const handleCreditCardSelection = (selectedCard: any) => {
+type SavedCard = {
+  id: number
+  cardNumber?: string
+  lastFourDigits: string
+  expiryDate: string
+  nameOnCard: string
+  cardBrand?: string
+}
+
+const handleCreditCardSelection = (selectedCard: SavedCard | null) => {
   if (selectedCard) {
     let formattedExpiryDate = selectedCard.expiryDate
     if (selectedCard.expiryDate && selectedCard.expiryDate.includes('-')) {
@@ -444,10 +461,11 @@ const openTermsAndPrivacyModal = () => {
                 aria-label="Agree to Terms of Service and Privacy Policy"
                 :disabled="!formData.agreeToTermsAndPrivacy"
               />
-              <span class="label-text">
-                I agree to the
-              </span>
-              <span @click.stop.prevent="openTermsAndPrivacyModal" class="link text-blue-500 hover:text-blue-700 cursor-pointer">
+              <span class="label-text"> I agree to the </span>
+              <span
+                @click.stop.prevent="openTermsAndPrivacyModal"
+                class="link text-blue-500 hover:text-blue-700 cursor-pointer"
+              >
                 Terms of Service and Privacy Policy
               </span>
             </div>
@@ -539,7 +557,9 @@ const openTermsAndPrivacyModal = () => {
             <span class="font-medium">Secure Checkout</span>
           </div>
           <p class="text-xs text-base-content/70 mt-1">
-            Your payment details (excluding CVV) are stored securely. CVV is required for payment verification but is <b>never</b> stored. Saved cards can autofill for convenience but still require CVV entry.
+            Your payment details (excluding CVV) are stored securely. CVV is required for payment
+            verification but is <b>never</b> stored. Saved cards can autofill for convenience but
+            still require CVV entry.
           </p>
         </div>
       </div>

@@ -31,7 +31,7 @@ export async function addGameToCart(
     }
 
     const data = await response.json()
-    toastStore.showSuccess('Added game to cart')
+    toastStore.showSuccess('Added game to cart', 1000)
     return { success: true, data: data.data as BasicCartItem[] }
   } catch (error) {
     console.error('Error adding game to cart:', error)
@@ -72,7 +72,7 @@ export async function removeGameFromCart(
     }
 
     const data = await response.json()
-    toastStore.showSuccess('Removed game from cart')
+    toastStore.showSuccess('Removed game from cart', 1000)
     return { success: true, data: data.data as BasicCartItem[] }
   } catch (error) {
     console.error('Error removing game from cart:', error)

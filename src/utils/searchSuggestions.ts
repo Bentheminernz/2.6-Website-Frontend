@@ -1,4 +1,4 @@
-import { useToastStore } from "@/stores/toast";
+import { useToastStore } from '@/stores/toast'
 
 export interface SearchSuggestion {
   id: number
@@ -29,7 +29,7 @@ export async function fetchSearchSuggestions(
       success: true,
       data: data.data as SearchSuggestion[],
     }
-  } catch (error) {
+  } catch {
     toastStore.showError('An error occurred while fetching search suggestions')
     return { success: false, message: 'An error occurred while fetching search suggestions' }
   }
