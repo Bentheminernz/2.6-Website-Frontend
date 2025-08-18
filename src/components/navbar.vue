@@ -70,10 +70,7 @@ const itemsInCart = computed(() => {
             <span class="text-lg font-bold">{{ itemsInCart }} items</span>
             <span class="text-info">Subtotal: ${{ authStore.user?.cart_subtotal }}</span>
             <div class="card-actions">
-              <button
-                class="btn btn-secondary btn-block"
-                :disabled="itemsInCart === 0"
-              >
+              <button class="btn btn-secondary btn-block" :disabled="itemsInCart === 0">
                 <RouterLink to="/cart">View Cart</RouterLink>
               </button>
             </div>

@@ -191,7 +191,13 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function createUser(username: string, email: string, password: string, firstname: string, lastname: string) {
+  async function createUser(
+    username: string,
+    email: string,
+    password: string,
+    firstname: string,
+    lastname: string,
+  ) {
     isLoading.value = true
     error.value = ''
 
@@ -202,7 +208,13 @@ export const useAuthStore = defineStore('auth', () => {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: JSON.stringify({ username, email, password, first_name: firstname, last_name: lastname }),
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          first_name: firstname,
+          last_name: lastname,
+        }),
       })
 
       const data = await response.json()

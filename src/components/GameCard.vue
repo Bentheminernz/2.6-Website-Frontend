@@ -56,7 +56,8 @@ const isPreorder = computed(() => {
 
         <button v-else class="btn btn-primary" :disabled="isPreorder">Download</button>
         <p v-if="isPreorder" class="text-sm text-gray-500">
-          This game is a preorder and will be available on {{ new Date(props.game.release_date).toLocaleDateString() }}
+          This game is a preorder and will be available on
+          {{ new Date(props.game.release_date).toLocaleDateString() }}
         </p>
       </div>
     </div>

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { useToastStore } from '@/stores/toast';
-import { PhX, PhCheckCircle, PhInfo, PhWarning, PhXCircle } from '@phosphor-icons/vue';
+import { useToastStore } from '@/stores/toast'
+import { PhX, PhCheckCircle, PhInfo, PhWarning, PhXCircle } from '@phosphor-icons/vue'
 
-const toastStore = useToastStore();
-
+const toastStore = useToastStore()
 
 const getAlertClass = (type: string) => {
   switch (type) {

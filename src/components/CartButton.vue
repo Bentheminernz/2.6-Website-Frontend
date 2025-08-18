@@ -1,9 +1,10 @@
-x<script lang="ts" setup>
+x
+<script lang="ts" setup>
 import { ref, computed, defineProps } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { addGameToCart, removeGameFromCart } from '@/utils/gameCartEdit'
-import { useRouter } from 'vue-router';
-import { PhX, PhPlus, PhCheck } from '@phosphor-icons/vue';
+import { useRouter } from 'vue-router'
+import { PhX, PhPlus, PhCheck } from '@phosphor-icons/vue'
 
 const props = defineProps<{
   gameId: number
@@ -105,7 +106,10 @@ const getButtonClass = (gameId: number): string => {
   >
     <span class="text-white transition-all duration-300 ease-in-out items-center flex">
       <PhPlus
-        v-if="getButtonText(props.gameId) === 'Add to Cart' || getButtonText(props.gameId) === 'Pre-order'"
+        v-if="
+          getButtonText(props.gameId) === 'Add to Cart' ||
+          getButtonText(props.gameId) === 'Pre-order'
+        "
         class="inline-block mr-1"
       />
 
@@ -119,7 +123,7 @@ const getButtonClass = (gameId: number): string => {
         class="inline-block mr-1"
       />
 
-      {{getButtonText(props.gameId)}}
+      {{ getButtonText(props.gameId) }}
     </span>
   </button>
 </template>
