@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -12,9 +12,20 @@ const password = ref('')
 const error = ref<string | null>(null)
 
 const handleLogin = async () => {
+  if (!username.value || !password.value) {
+    error.value = 'Please enter both username and password.'
+    return
+  }
+
   try {
     await authStore.login(username.value, password.value)
-    router.push({ name: 'games' })
+    .then(() => {
+      if (authStore.isAuthenticated) {
+        router.push({ name: 'games' })
+      } else {
+        error.value = 'Login failed. Please check your credentials.'
+      }
+    })
   } catch (err) {
     if (err instanceof Error) {
       error.value = err.message
@@ -23,6 +34,18 @@ const handleLogin = async () => {
     }
   }
 }
+
+watch(() => username.value, () => {
+  if (error.value) {
+    error.value = null
+  }
+})
+
+watch(() => password.value, () => {
+  if (error.value) {
+    error.value = null
+  }
+})
 </script>
 
 <template>
@@ -38,6 +61,7 @@ const handleLogin = async () => {
         class="input w-full"
         placeholder="Email or Username"
         v-model="username"
+        @keyup.enter="handleLogin"
         required
       />
 
@@ -47,6 +71,7 @@ const handleLogin = async () => {
         class="input w-full"
         placeholder="Password"
         v-model="password"
+        @keyup.enter="handleLogin"
         required
       />
 

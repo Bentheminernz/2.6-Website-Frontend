@@ -17,6 +17,14 @@ const isPreorder = computed(() => {
   const currentDate = new Date()
   return Boolean(props.game.release_date && new Date(props.game.release_date) > currentDate)
 })
+
+const truncatedDescription = computed(() => {
+  const desc = props.game.description || ''
+  if (desc.length > 200) {
+    return desc.substring(0, 200) + '...'
+  }
+  return desc
+})
 </script>
 
 <template>
@@ -26,7 +34,7 @@ const isPreorder = computed(() => {
     <RouterLink :to="`/games/${props.game.id}`">
       <figure>
         <img
-          :src="game.image"
+          :src="props.game.image"
           alt="Game Image"
           class="w-full max-h-100 object-cover rounded-t-2xl"
           loading="lazy"
@@ -34,7 +42,7 @@ const isPreorder = computed(() => {
       </figure>
       <div class="card-body">
         <h2 class="card-title">{{ props.game.title }}</h2>
-        <p>{{ game.description.substring(0, 100) }}...</p>
+        <p class="text-sm text-gray-500">{{ truncatedDescription }}</p>
         <div v-if="!game.is_sale && showAddToCart">
           <p class="text-lg font-bold">${{ props.game.price }}</p>
         </div>
