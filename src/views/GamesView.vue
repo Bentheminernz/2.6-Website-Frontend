@@ -9,9 +9,11 @@ import GameCardSkeleton from '@/components/GameCardSkeleton.vue'
 import { fetchSearchSuggestions } from '@/utils/searchSuggestions'
 import type { SearchSuggestion } from '@/utils/searchSuggestions'
 import { PhWarningCircle, PhFunnel, PhX, PhMagnifyingGlass } from '@phosphor-icons/vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 
 const gamesReponse = ref<GamesResponse>({ success: false })
 const isMobileFiltersOpen = ref(false)
@@ -168,7 +170,7 @@ const resetFiltersAndFetch = async () => {
   searchQuery.value = ''
   isOnSale.value = false
   sortBy.value = 'title'
-  paginationOptions.value = 24
+  paginationOptions.value = 12
   hideOwnedGames.value = false
   currentPage.value = 1
 
@@ -302,10 +304,12 @@ const resetFiltersAndFetch = async () => {
           <span class="label-text">Show Only On Sale</span>
         </label>
 
-        <label class="label cursor-pointer justify-start gap-3">
-          <input v-model="hideOwnedGames" type="checkbox" class="checkbox checkbox-primary" />
-          <span class="label-text">Don't Show Owned Games</span>
-        </label>
+        <div v-if="authStore.isAuthenticated">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input v-model="hideOwnedGames" type="checkbox" class="checkbox checkbox-primary" />
+            <span class="label-text">Don't Show Owned Games</span>
+          </label>
+        </div>
       </div>
 
       <button @click="resetFiltersAndFetch" class="btn btn-secondary w-full">Reset Filters</button>
@@ -341,7 +345,7 @@ const resetFiltersAndFetch = async () => {
       </div>
 
       <div v-if="gamesReponse.success">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <GameCard v-for="game in gamesReponse.data?.games" :key="game.id" :game="game" />
         </div>
 

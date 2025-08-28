@@ -6,6 +6,7 @@ import { fetchSpecificGame } from '@/utils/fetchGame'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import CartButton from '@/components/CartButton.vue'
+import { PhWarningCircle } from '@phosphor-icons/vue'
 
 const authStore = useAuthStore()
 const route = useRoute()
@@ -112,5 +113,12 @@ const isOwned = computed(() => {
       <strong>Description:</strong>
       {{ gameResponse.data?.description || 'No description available' }}
     </p>
+  </div>
+
+  <div v-else-if="gameResponse.message === 'Game not found.'">
+    <div class="bg-base-200 p-4 rounded-lg shadow-lg w-1/2 flex flex-col items-center justify-center mx-auto">
+      <PhWarningCircle :size="178" />
+      <h1 class="text-lg font-bold">Game not found.</h1>
+    </div>
   </div>
 </template>
